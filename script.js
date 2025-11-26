@@ -5,11 +5,14 @@ const placedBoxes = [];
 
 // constants for physics laws
 const physics = {
+  gravity: 9.81,
   maxAngle: 25,
-  torqueScale: 2400,
+  damping: 0.99,
 };
 
 let angle = 0;
+let angularVelocity = 0;
+let angularAcceleration = 0;
 
 function placeBox(event) {
   // getting the bounding box of seesaw
@@ -51,23 +54,48 @@ function placeBox(event) {
 
 function updateRotation() {
   let netTorque = 0;
+  let momentOfInertia = 0;
 
   // calculate net torque by
   // iterating all boxes in our array
   placedBoxes.forEach((box) => {
-    netTorque += box.weight * box.distanceFromCenter;
+    // torque = force x distance
+    // force = mass x gravity
+    netTorque += box.weight * box.distanceFromCenter * physics.gravity;
+
+    // moment of inertia = mass x distance^2
+    momentOfInertia += box.weight * Math.pow(box.distanceFromCenter, 2);
   });
 
-  const angle = netTorque / physics.torqueScale;
+  // adding base inertia to avoid extreme angles with small weights
+  momentOfInertia += 5002;
+
+  // we need calculate angular velocity
+  // so we need angular acceleration
+  angularAcceleration = netTorque / momentOfInertia;
+  angularVelocity += angularAcceleration;
+  angularVelocity *= physics.damping;
+
+  angle += angularVelocity;
 
   // limit the angle to maxAngle
-  angle = Math.max(Math.min(rawAngle, physics.maxAngle), -physics.maxAngle);
+  if (angle > physics.maxAngle) {
+    angle = physics.maxAngle;
+  } else if (angle < -physics.maxAngle) {
+    angle = -physics.maxAngle;
+  }
 
   // rotate the css object
   seesaw.style.transform = `translateX(-50%) rotate(${angle}deg)`;
 }
 
+function animate() {
+  updateRotation();
+  requestAnimationFrame(animate);
+}
+
 seesaw.addEventListener("click", (event) => {
   placeBox(event);
-  updateRotation();
 });
+
+animate();
