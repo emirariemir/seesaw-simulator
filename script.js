@@ -1,8 +1,16 @@
 const boxSize = 40;
 const seesaw = document.getElementById("seesaw");
 const SEESAW_WIDTH = 750;
+const placedBoxes = [];
 
-// function for placing boxes on the seesaw
+// constants for physics laws
+const physics = {
+  maxAngle: 25,
+  torqueScale: 2400,
+};
+
+let angle = 0;
+
 function placeBox(event) {
   // getting the bounding box of seesaw
   const rect = seesaw.getBoundingClientRect();
@@ -32,6 +40,34 @@ function placeBox(event) {
   box.style.top = `-${boxSize}px`;
 
   seesaw.appendChild(box);
+
+  // push that box to our array
+  placedBoxes.push({
+    el: box,
+    weight: weight,
+    distanceFromCenter: relativeLeft + boxSize / 2 - SEESAW_WIDTH / 2,
+  });
 }
 
-seesaw.addEventListener("click", placeBox);
+function updateRotation() {
+  let netTorque = 0;
+
+  // calculate net torque by
+  // iterating all boxes in our array
+  placedBoxes.forEach((box) => {
+    netTorque += box.weight * box.distanceFromCenter;
+  });
+
+  const angle = netTorque / physics.torqueScale;
+
+  // limit the angle to maxAngle
+  angle = Math.max(Math.min(rawAngle, physics.maxAngle), -physics.maxAngle);
+
+  // rotate the css object
+  seesaw.style.transform = `translateX(-50%) rotate(${angle}deg)`;
+}
+
+seesaw.addEventListener("click", (event) => {
+  placeBox(event);
+  updateRotation();
+});
