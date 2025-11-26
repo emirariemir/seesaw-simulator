@@ -104,3 +104,14 @@ p {
   transform-origin: center;
   z-index: 3;
 }
+
+@keyframes box-drop {
+  0% {
+    transform: translateY(-50px) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
