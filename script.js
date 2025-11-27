@@ -6,8 +6,8 @@ const boxSize = 40;
 const SEESAW_WIDTH = 750;
 const placedBoxes = [];
 
-const boxPlacedSound = new Audio("boxPlaced.wav");
-const resetButtonSound = new Audio("resetButtonSound.wav");
+const boxPlacedSound = new Audio("sounds/boxPlaced.wav");
+const resetButtonSound = new Audio("sounds/resetButtonSound.wav");
 
 // constants for physics laws
 const physics = {
