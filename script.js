@@ -6,6 +6,9 @@ const boxSize = 40;
 const SEESAW_WIDTH = 750;
 const placedBoxes = [];
 
+const boxPlacedSound = new Audio("boxPlaced.wav");
+const resetButtonSound = new Audio("resetButtonSound.wav");
+
 // constants for physics laws
 const physics = {
   gravity: 9.81,
@@ -50,8 +53,6 @@ function placeBox(event) {
   const weight = Math.round(1 + Math.random() * 10);
   box.textContent = weight;
 
-  // calculating the pos of the box relative to seesaw
-
   box.style.left = `${relativeLeft}px`;
   box.style.top = `-${boxSize}px`;
 
@@ -63,6 +64,10 @@ function placeBox(event) {
     weight: weight,
     distanceFromCenter: relativeLeft + boxSize / 2 - SEESAW_WIDTH / 2,
   });
+
+  // higher volume for heavier boxes
+  boxPlacedSound.volume = weight / 10;
+  boxPlacedSound.play();
 
   // update weights because
   // theres a new box!
@@ -98,14 +103,22 @@ function updateRotation() {
   // limit the angle to maxAngle
   if (angle > physics.maxAngle) {
     angle = physics.maxAngle;
+
     // flip velocity and reduce it heavily
     // for bouncing effect
-    if (angularVelocity > 0) angularVelocity *= -0.5;
-    else angularVelocity = 0;
+    if (angularVelocity > 0) {
+      angularVelocity *= -0.5;
+    } else {
+      angularVelocity = 0;
+    }
   } else if (angle < -physics.maxAngle) {
     angle = -physics.maxAngle;
-    if (angularVelocity < 0) angularVelocity *= -0.5;
-    else angularVelocity = 0;
+
+    if (angularVelocity < 0) {
+      angularVelocity *= -0.5;
+    } else {
+      angularVelocity = 0;
+    }
   }
 
   // rotate the css object
@@ -125,6 +138,8 @@ function resetSimulation() {
   // update display because
   // we just got reset!
   updateWeightDisplay();
+
+  resetButtonSound.play();
 }
 
 function updateWeightDisplay() {
