@@ -1,5 +1,6 @@
-const boxSize = 40;
 const seesaw = document.getElementById("seesaw");
+const resetButton = document.getElementById("reset-btn");
+const boxSize = 40;
 const SEESAW_WIDTH = 750;
 const placedBoxes = [];
 
@@ -105,6 +106,17 @@ function updateRotation() {
   seesaw.style.transform = `translateX(-50%) rotate(${angle}deg)`;
 }
 
+function resetSimulation() {
+  // remove all boxes in the DOM
+  seesaw.innerHTML = "";
+  placedBoxes.length = 0;
+
+  // reset acceleration and velocity
+  angle = 0;
+  angularVelocity = 0;
+  angularAcceleration = 0;
+}
+
 function animate() {
   updateRotation();
   requestAnimationFrame(animate);
@@ -113,5 +125,7 @@ function animate() {
 seesaw.addEventListener("click", (event) => {
   placeBox(event);
 });
+
+resetButton.addEventListener("click", resetSimulation);
 
 animate();
