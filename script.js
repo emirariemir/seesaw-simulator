@@ -15,13 +15,29 @@ let angularVelocity = 0;
 let angularAcceleration = 0;
 
 function placeBox(event) {
-  // getting the bounding box of seesaw
-  const rect = seesaw.getBoundingClientRect();
+  // finding the center of screen
+  const screenCenter = window.innerWidth / 2;
 
-  // returning if click is outside seesaw area
-  if (event.clientX < rect.left || event.clientX > rect.right) {
-    return;
-  }
+  // calculating the virtual distance,
+  // as if seesaw is not rotated
+  const virtualDistanceFromCenter = event.clientX - screenCenter;
+
+  // we need to project the screen distance
+  // onto tilted seesaw by dividing by cos(angle)
+  // --------
+  // we need to convert angle to radians before
+  // using it in cos function
+  const angleInRadians = angle * (Math.PI / 180);
+  const relativeDistanceFromCenter =
+    virtualDistanceFromCenter / Math.cos(angleInRadians);
+
+  // calculating the left pos
+  // of the box relative to seesaw
+  let relativeLeft =
+    SEESAW_WIDTH / 2 + relativeDistanceFromCenter - boxSize / 2;
+
+  // clamping the pos to keep boxes inside seesaw
+  relativeLeft = Math.min(Math.max(relativeLeft, 0), SEESAW_WIDTH - boxSize);
 
   // creating a box
   const box = document.createElement("div");
@@ -32,12 +48,6 @@ function placeBox(event) {
   box.textContent = weight;
 
   // calculating the pos of the box relative to seesaw
-  // if user clicks too much right edge, be at least 0
-  // if user clicks too much left, be at seesaw width - box most
-  const relativeLeft = Math.min(
-    Math.max(event.clientX - rect.left - boxSize / 2, 0),
-    rect.width - boxSize
-  );
 
   box.style.left = `${relativeLeft}px`;
   box.style.top = `-${boxSize}px`;
@@ -81,8 +91,14 @@ function updateRotation() {
   // limit the angle to maxAngle
   if (angle > physics.maxAngle) {
     angle = physics.maxAngle;
+    // flip velocity and reduce it heavily
+    // for bouncing effect
+    if (angularVelocity > 0) angularVelocity *= -0.5;
+    else angularVelocity = 0;
   } else if (angle < -physics.maxAngle) {
     angle = -physics.maxAngle;
+    if (angularVelocity < 0) angularVelocity *= -0.5;
+    else angularVelocity = 0;
   }
 
   // rotate the css object
