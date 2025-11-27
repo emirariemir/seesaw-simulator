@@ -1,5 +1,7 @@
 const seesaw = document.getElementById("seesaw");
 const resetButton = document.getElementById("reset-btn");
+const totalLeftEl = document.getElementById("total-left");
+const totalRightEl = document.getElementById("total-right");
 const boxSize = 40;
 const SEESAW_WIDTH = 750;
 const placedBoxes = [];
@@ -61,6 +63,10 @@ function placeBox(event) {
     weight: weight,
     distanceFromCenter: relativeLeft + boxSize / 2 - SEESAW_WIDTH / 2,
   });
+
+  // update weights because
+  // theres a new box!
+  updateWeightDisplay();
 }
 
 function updateRotation() {
@@ -115,6 +121,28 @@ function resetSimulation() {
   angle = 0;
   angularVelocity = 0;
   angularAcceleration = 0;
+
+  // update display because
+  // we just got reset!
+  updateWeightDisplay();
+}
+
+function updateWeightDisplay() {
+  let leftTotal = 0;
+  let rightTotal = 0;
+
+  // calculate total weights on
+  // both side by iterating through boxes
+  placedBoxes.forEach((box) => {
+    if (box.distanceFromCenter < 0) {
+      leftTotal += box.weight;
+    } else {
+      rightTotal += box.weight;
+    }
+  });
+
+  totalLeftEl.textContent = leftTotal;
+  totalRightEl.textContent = rightTotal;
 }
 
 function animate() {
