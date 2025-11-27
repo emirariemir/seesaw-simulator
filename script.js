@@ -7,7 +7,7 @@ const placedBoxes = [];
 // constants for physics laws
 const physics = {
   gravity: 9.81,
-  maxAngle: 25,
+  maxAngle: 30,
   damping: 0.99,
 };
 
