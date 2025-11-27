@@ -113,3 +113,8 @@ Certain parts of this project were assisted by AI tools:
 - Generating consistent wording and summarization for README
 - Minor syntax refactoring suggestions for readability
 - Quick visual styling guidance (but manually applied by me)
+
+## Running and Testing
+
+The live version of the project is available here:
+https://emirariemir.github.io/seesaw-simulator/
