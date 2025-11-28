@@ -62,6 +62,8 @@ All of this logic lives inside `updateRotation()` in `script.js`, which is the c
 
 ### 3. Accurate projection of click position on a rotated seesaw
 
+![projection-diagram](projection-note.png)
+
 Even when the seesaw rotates, clicking on it places objects at the correct real-world distance from the center. This is achieved by projecting the screen distance onto the rotated surface:
 
 ```
