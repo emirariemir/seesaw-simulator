@@ -50,7 +50,7 @@ function placeBox(event) {
   box.className = "box";
 
   // generating random weight
-  const weight = Math.round(1 + Math.random() * 10);
+  const weight = Math.floor(1 + Math.random() * 10);
   box.textContent = weight;
 
   box.style.left = `${relativeLeft}px`;
@@ -108,16 +108,12 @@ function updateRotation() {
     // for bouncing effect
     if (angularVelocity > 0) {
       angularVelocity *= -0.5;
-    } else {
-      angularVelocity = 0;
     }
   } else if (angle < -physics.maxAngle) {
     angle = -physics.maxAngle;
 
     if (angularVelocity < 0) {
       angularVelocity *= -0.5;
-    } else {
-      angularVelocity = 0;
     }
   }
 
