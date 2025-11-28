@@ -62,7 +62,7 @@ function placeBox(event) {
   placedBoxes.push({
     el: box,
     weight: weight,
-    distanceFromCenter: relativeLeft + boxSize / 2 - SEESAW_WIDTH / 2,
+    distanceFromCenter: relativeDistanceFromCenter,
   });
 
   // higher volume for heavier boxes
